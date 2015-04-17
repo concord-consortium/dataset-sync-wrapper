@@ -1,6 +1,10 @@
 // change it manually in browser console if you need logging
 var LOGGING_ENABLED = false;
 
+var DEF_DATASET_NAME = 'prediction-dataset';
+var DEF_GLOBAL_STATE_KEY = 'gstate-prediction-dataset';
+var DEF_INTERACTIVE_URL = 'https://lab.concord.org/embeddable-dev.html#interactives/itsi/sensor/prediction-prediction.json';
+
 function getParameterByName(name, defaultValue) {
   if (defaultValue == null) {
     defaultValue = '';
@@ -34,11 +38,11 @@ function DatasetSyncWrapper(id) {
 }
 
 DatasetSyncWrapper.prototype.loadConfiguration = function() {
-  this.datasetName = getParameterByName('datasetName', 'prediction-dataset');
+  this.datasetName = getParameterByName('datasetName', DEF_DATASET_NAME);
   log('DatasetSyncWrapper: Using dataset ' + this.datasetName);
-  this.globalStateKey = getParameterByName('globalStateKey', 'gstate-prediction-dataset');
+  this.globalStateKey = getParameterByName('globalStateKey', DEF_GLOBAL_STATE_KEY);
   log('DatasetSyncWrapper: Global key ' + this.globalStateKey);
-  this.interactiveUrl = getParameterByName('interactive', 'http://lab.concord.org/embeddable-dev.html#interactives/itsi/sensor/prediction-prediction.json');
+  this.interactiveUrl = getParameterByName('interactive', DEF_INTERACTIVE_URL);
   log('DatasetSyncWrapper: Interactive ' + this.interactiveUrl);
 };
 

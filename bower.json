@@ -1,0 +1,19 @@
+{
+  "name": "dataset-sync-wrapper",
+  "version": "0.0.1",
+  "homepage": "https://github.com/concord-consortium/dataset-sync-wrapper",
+  "authors": [
+    "Noah Paessel <npaessel@concord.org>",
+    "Piotr Janik <janikpiotrek@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "iframe-phone": "~1.1.3",
+    "jquery": "~2.1.3",
+    "shutterbug": "~0.5.4"
+  }
+}

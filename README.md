@@ -21,6 +21,22 @@ AWS S3 bucket is used for production. If you push `production` branch, it will b
 
 http://models-resources.concord.org/dataset-sync-wrapper/index.html
 
+## Testing
+
+[LARA Interactive API](https://github.com/concord-consortium/lara-interactive-api) test page supports dataset sync wrapper:
+
+http://concord-consortium.github.io/lara-interactive-api/
+
+If you modify it, make sure that the page linked above still works as expected (especially `interactiveStateGlobal` and `loadGlobalState` messages).
+
+More specific test:
+
+http://concord-consortium.github.io/lara-interactive-api/prediction
+
+Make sure that when you draw points on the left graph, they become visible on the right one.
+
+Both pages use GitHub pages deployment of this repository.
+
 ## License 
 
 [MIT](https://github.com/concord-consortium/dataset-sync-wrapper/blob/master/LICENSE)

@@ -6,10 +6,10 @@ cache: bundler
 bundler_args: "--without development"
 branches:
   only:
-    - production
+  - production
 script: mkdir -p deploy/dataset-sync-wrapper && cp -r *.html *.js bower_components deploy/dataset-sync-wrapper/
 after_success: bundle exec s3_website push --site deploy
 env:
   global:
-  - secure: LDIIdeO68UG3IBvrqzPTjexSbo6yUvKxuLnIp3s2MG/XgW7fK//InMDAHmjFpBSaBEN0m/DQjHt25WUXB5bekNTPbcz4Bzubc9wFBJyBfjM88ja03gFZiY9r2F6yLb65NI4NCxt5KP1HA7J+tm9qPvl9PNJJo87cRP8di8/g1WI=
-  - secure: PLlRxUIs9RrH9Dk9udfyYcqpTMS1e4qugWw0qMByin3SYibLE5JAECushXY35nbrdgE1pDpQg0b2JI+w60CEGfWWQ8feUkydF1STikD6tdBXEfwMiKqYiqH1/4d6tiH38U9e/9F4CDTx2ZiqH33gWoglLENRrcqOVKWY5+WZv/s=
+  - secure: JyXnozCwLHPXd5jR2TUgmLiBwJw1vRU4Ci0fcDcQWoYNGK4AV1vInUaKkQAMpqSM+OS5juDPbXcb2jZLHucfpUDrNLvSsujsFtKRjWMIcPT8ys1Y1xkp4smBcrGFc1ql8u1orBDb5hzz40dyg47MLoPK42+hdePHH/AYF/AKFrY=
+  - secure: IMoEkkvGpyvG4n12tY50Hda/nQQ6dd+jA8Vj+LAu8RxW/nGRWtBhV/e3Pl+5kmetKUEj8Ev7wCT0S6yFUCLIeLCO/BDamj6u1C2UhyNT1uHNqqrlFztnPlrDzFWXKHdZtoRw/6/8lTvVPRDqnSLrnLn/S2QlJr/lOKHX/onInY8=

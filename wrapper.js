@@ -76,6 +76,17 @@ DatasetSyncWrapper.prototype.scheduleDataUpdate = function() {
   this.updateRuntimeDataSchedule = setTimeout(func, this.updateInterval);
 };
 
+DatasetSyncWrapper.prototype.loadDataset = function() {
+  var dataset = this.globalState[this.globalStateKey];
+  if (dataset) {
+    this.interactivePhone.post('sendDatasetEvent', {
+      'eventName': 'dataReset',
+      'datasetName': this.datasetName,
+      'data': dataset.value.initialData
+    });
+  }
+};
+
 DatasetSyncWrapper.prototype.runtimeHandlers = function() {
   return {
     "loadInteractiveGlobal": function(data) {
@@ -84,14 +95,7 @@ DatasetSyncWrapper.prototype.runtimeHandlers = function() {
         data = JSON.parse(data);
       }
       this.globalState = data;
-      myData = this.globalState[this.globalStateKey];
-      if (myData) {
-        this.interactivePhone.post('sendDatasetEvent', {
-          'eventName': 'dataReset',
-          'datasetName': this.datasetName,
-          'data': myData.value.initialData
-        });
-      }
+      this.loadDataset();
     }.bind(this)
   };
 };
@@ -110,6 +114,9 @@ DatasetSyncWrapper.prototype.interactiveHandlers = function() {
   obj['dataset'] = function(data) {
     this.globalState[this.globalStateKey] = data;
     this.runtimePhone.post('interactiveStateGlobal', this.globalState);
+  }.bind(this);
+  obj['modelLoaded'] = function() {
+    this.loadDataset();
   }.bind(this);
   return obj;
 };

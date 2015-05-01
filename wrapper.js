@@ -4,6 +4,7 @@ var LOGGING_ENABLED = false;
 var DEF_DATASET_NAME = 'prediction-dataset';
 var DEF_GLOBAL_STATE_KEY = 'gstate-prediction-dataset';
 var DEF_INTERACTIVE_URL = 'https://lab.concord.org/embeddable-dev.html#interactives/itsi/sensor/prediction-prediction.json';
+var DEF_LOAD_ONLY = false;
 
 function getParameterByName(name, defaultValue) {
   if (defaultValue == null) {
@@ -44,6 +45,8 @@ DatasetSyncWrapper.prototype.loadConfiguration = function() {
   log('DatasetSyncWrapper: Global key ' + this.globalStateKey);
   this.interactiveUrl = getParameterByName('interactive', DEF_INTERACTIVE_URL);
   log('DatasetSyncWrapper: Interactive ' + this.interactiveUrl);
+  this.loadOnly = getParameterByName('loadOnly', DEF_LOAD_ONLY);
+  log('DatasetSyncWrapper: Load only ' + this.loadOnly);
 };
 
 DatasetSyncWrapper.prototype.registerPhones = function(id) {
@@ -87,6 +90,10 @@ DatasetSyncWrapper.prototype.loadDataset = function() {
   }
 };
 
+DatasetSyncWrapper.prototype.sendGlobalStateToRuntime = function() {
+  this.runtimePhone.post('interactiveStateGlobal', this.globalState);
+};
+
 DatasetSyncWrapper.prototype.runtimeHandlers = function() {
   return {
     "loadInteractiveGlobal": function(data) {
@@ -102,22 +109,25 @@ DatasetSyncWrapper.prototype.runtimeHandlers = function() {
 
 DatasetSyncWrapper.prototype.interactiveHandlers = function() {
   var obj = {};
-  obj[this.datasetName + '-sampleAdded'] = function() {
-    this.scheduleDataUpdate();
-  }.bind(this);
-  obj[this.datasetName + '-sampleRemoved'] = function() {
-    this.scheduleDataUpdate();
-  }.bind(this);
-  obj[this.datasetName + '-dataReset'] = function() {
-    this.scheduleDataUpdate();
-  }.bind(this);
-  obj['dataset'] = function(data) {
-    this.globalState[this.globalStateKey] = data;
-    this.runtimePhone.post('interactiveStateGlobal', this.globalState);
-  }.bind(this);
   obj['modelLoaded'] = function() {
     this.loadDataset();
   }.bind(this);
+  if (!this.loadOnly) {
+    obj[this.datasetName + '-sampleAdded'] = function() {
+      this.scheduleDataUpdate();
+    }.bind(this);
+    obj[this.datasetName + '-sampleRemoved'] = function() {
+      this.scheduleDataUpdate();
+    }.bind(this);
+    obj[this.datasetName + '-dataReset'] = function() {
+      this.scheduleDataUpdate();
+    }.bind(this);
+    obj['dataset'] = function(data) {
+      // This is handler of the response to `getDataset` issued in #scheduleDataUpdate().
+      this.globalState[this.globalStateKey] = data;
+      this.sendGlobalStateToRuntime();
+    }.bind(this);
+  }
   return obj;
 };
 
@@ -128,12 +138,15 @@ DatasetSyncWrapper.prototype.interactivePhoneAnswered = function() {
     log('DatasetSyncWrapper: interactive phone answered');
     this.alreadySetupInteractive = true;
     this.registerHandlers(this.interactivePhone, this.interactiveHandlers());
-    'sampleAdded dataReset sampleRemoved'.split(/\s+/).forEach(function(evt) {
-      this.interactivePhone.post('listenForDatasetEvent', {
-        eventName: evt,
-        datasetName: this.datasetName
-      });
-    }.bind(this));
+    if (!this.loadOnly) {
+      // We are not intrested in dataset events if we only care about loading global state into interactive.
+      'sampleAdded dataReset sampleRemoved'.split(/\s+/).forEach(function(evt) {
+        this.interactivePhone.post('listenForDatasetEvent', {
+          eventName: evt,
+          datasetName: this.datasetName
+        });
+      }.bind(this));
+    }
   }
 };
 

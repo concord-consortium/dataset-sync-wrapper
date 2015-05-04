@@ -37,6 +37,32 @@ Make sure that when you draw points on the left graph, they become visible on th
 
 Both pages use GitHub pages deployment of this repository.
 
-## License 
+## Using & Parameters
+
+When a production release is created, the wrapper will be made available
+at: http://models-resources.concord.org/dataset-sync-wrapper/index.html
+
+You need to pass in several options using URL query parameters. Here are
+the available parameters:
+
+* `loadOnly` True here means that future `GlobalState` messages will be
+  ignored. The dataSet is only updated when first loaded.
+* `globalStateKey` The global state key that is used to map into the interactive data.
+* `dataSetName` The interactive dataset which will trigger / respond to
+  event on the global key.
+* `interactive` The encoded URL for the interactive to be wrapped, eg `https%3A%2F%2Flab.concord.org%2Fembeddable-dev.html%23interactives%2Fitsi%2Fsensor%2Fsensor-connector.json`
+
+#### Example: 
+
+`https://concord-consortium.github.io/dataset-sync-wrapper?loadOnly=true&globalStateKey=data-collector-1&datasetName=sensor-dataset&interactive=https%3A%2F%2Flab.concord.org%2Fembeddable-dev.html%23interactives%2Fitsi%2Fsensor%2Fsensor-connector.json` 
+
+The above example:
+
+* Wraps this interactive `https://lab.concord.org/embeddable-dev.html#interactives/itsi/sensor/sensor-connector.json`
+* Uses the `loadOnly` option to ignore updates.
+* Uses the `sensor-dataset` interactive data-set.
+* Uses the `data-collector-1` global state key.
+
+## License
 
 [MIT](https://github.com/concord-consortium/dataset-sync-wrapper/blob/master/LICENSE)
